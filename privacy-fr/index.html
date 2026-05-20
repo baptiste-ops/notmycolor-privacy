@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NotMyColor — Politique de confidentialité</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
+    background: #ffffff;
+    color: #1a1a1a;
+    font-size: 15px;
+    line-height: 1.7;
+    padding: 40px 24px 80px;
+    max-width: 680px;
+    margin: 0 auto;
+  }
+  h1 { font-size: 26px; font-weight: 700; margin-bottom: 6px; }
+  .meta { font-size: 13px; color: #888; margin-bottom: 24px; }
+  .lang { font-size: 13px; color: #888; margin-bottom: 40px; }
+  .lang a { color: #1a1a1a; text-decoration: underline; }
+  h2 { font-size: 17px; font-weight: 700; margin-top: 36px; margin-bottom: 10px; }
+  h3 { font-size: 15px; font-weight: 600; margin-top: 18px; margin-bottom: 6px; }
+  p { margin-bottom: 14px; color: #333; }
+  ul { padding-left: 20px; margin-bottom: 14px; }
+  li { margin-bottom: 6px; color: #333; }
+  a { color: #1a1a1a; }
+  .divider { border: none; border-top: 1px solid #eee; margin: 32px 0; }
+</style>
+</head>
+<body>
+
+<h1>Politique de confidentialité</h1>
+<p class="meta">Dernière mise à jour : 11 mai 2026</p>
+<p class="lang"><a href="privacy-policy.html">Read in English</a></p>
+
+<p>La présente politique de confidentialité explique comment NotMyColor (« nous », « notre ») collecte, utilise et protège vos informations lorsque vous utilisez notre application iOS. En créant un compte ou en utilisant NotMyColor, vous acceptez les pratiques décrites ci-dessous.</p>
+
+<hr class="divider">
+
+<h2>1. Informations que nous collectons</h2>
+
+<h3>1.1 Informations de compte</h3>
+<p>Lorsque vous créez un compte, nous collectons votre <strong>adresse e-mail</strong> et le <strong>mot de passe</strong> que vous choisissez. Le mot de passe est haché et stocké par notre fournisseur d'authentification (Supabase) ; nous ne le voyons jamais et ne le stockons jamais en clair.</p>
+
+<h3>1.2 Informations de profil</h3>
+<p>Lors de l'onboarding, nous vous demandons de fournir :</p>
+<ul>
+  <li>Votre prénom</li>
+  <li>Votre tranche d'âge</li>
+  <li>Votre genre</li>
+  <li>Vos réponses à un questionnaire de style (réaction typique à une photo de vous-même, ouverture aux retours francs, budget mensuel vêtements, préférence bijoux, ce que vous souhaitez changer dans votre garde-robe, votre raison la plus honnête d'utiliser l'app, votre vibe stylistique)</li>
+  <li>Vos caractéristiques physiques auto-déclarées utilisées pour l'analyse colorimétrique : couleur de cheveux, couleur des yeux, teint, sous-ton du poignet</li>
+</ul>
+<p>Ces informations sont stockées dans votre compte au sein de notre base de données (Supabase) et servent à personnaliser l'analyse et l'expérience de l'application. Elles ne sont jamais vendues à des tiers ni utilisées à des fins publicitaires.</p>
+
+<h3>1.3 Photos pour l'analyse colorimétrique</h3>
+<p>Pendant l'onboarding, vous pouvez prendre une <strong>photo de votre visage</strong>, une <strong>photo de votre poignet</strong>, et éventuellement des selfies supplémentaires. Ces images sont transmises à notre partenaire IA (OpenAI) dans l'unique but de déterminer votre saison colorimétrique et votre sous-ton (voir Section 3). Elles ne sont <em>pas</em> stockées sur nos propres serveurs et ne sont pas associées à votre profil après l'analyse.</p>
+
+<h3>1.4 Photo de profil (avatar)</h3>
+<p>Si vous définissez une photo de profil depuis l'écran Profil, l'image est stockée sur votre appareil et synchronisée avec la ligne de votre compte dans notre base de données afin de pouvoir s'afficher entre les sessions et entre les appareils. Vous pouvez la supprimer à tout moment depuis l'écran Profil.</p>
+
+<h3>1.5 Photos de scans de vêtements</h3>
+<p>Lorsque vous scannez un vêtement avec l'appareil photo intégré, la photo est :</p>
+<ul>
+  <li>transmise à OpenAI pour l'analyse de la couleur et du type de vêtement (voir Section 3),</li>
+  <li>enregistrée sur votre appareil dans le stockage local de l'application,</li>
+  <li>uploadée dans votre historique de scans dans notre base de données (Supabase) afin que vous puissiez accéder à votre historique entre vos appareils.</li>
+</ul>
+<p>Vous pouvez supprimer un scan individuel ou tout votre historique à tout moment depuis l'écran Scans.</p>
+
+<h3>1.6 Saison colorimétrique et historique de scans</h3>
+<p>Votre saison colorimétrique détectée, votre saison secondaire, vos scores de compatibilité, les noms/types de vêtements, les couleurs dominantes et l'horodatage de chaque scan sont stockés dans votre compte afin que vous puissiez y accéder entre vos sessions.</p>
+
+<h3>1.7 Compteur d'essai gratuit</h3>
+<p>Nous stockons le nombre de scans que vous avez effectués (actuellement plafonné le temps que nous finalisions notre tarification) afin d'appliquer les limites de l'essai gratuit.</p>
+
+<h3>1.8 Préférences locales</h3>
+<p>Les préférences suivantes sont stockées uniquement sur votre appareil (dans iOS UserDefaults), jamais envoyées à nos serveurs : langue de l'app, thème de couleurs, préférence de notifications, préférence de sons.</p>
+
+<h2>2. Comment nous utilisons vos informations</h2>
+
+<ul>
+  <li>Pour créer votre compte et vous authentifier.</li>
+  <li>Pour analyser vos photos et déterminer votre saison colorimétrique.</li>
+  <li>Pour évaluer les vêtements par rapport à votre palette personnelle et formuler des recommandations.</li>
+  <li>Pour afficher et synchroniser votre historique de scans entre vos appareils.</li>
+  <li>Pour appliquer la limite de scans en essai gratuit et (dans une future version) gérer les abonnements.</li>
+  <li>Pour répondre aux demandes de support envoyées à <a href="mailto:contact@notmycolor.app">contact@notmycolor.app</a>.</li>
+  <li>Pour détecter les abus, fraudes ou violations de nos Conditions d'utilisation.</li>
+</ul>
+
+<p>Nous <strong>n'utilisons pas</strong> vos données à des fins publicitaires, de profilage marketing ou de revente à des tiers. Nous <strong>n'utilisons</strong> actuellement <strong>aucun</strong> SDK d'analytics ou de rapport de plantage.</p>
+
+<h2>3. Services tiers et traitement IA</h2>
+
+<p>NotMyColor s'appuie sur deux sous-traitants tiers :</p>
+
+<h3>3.1 Supabase (compte, base de données, stockage)</h3>
+<p>Supabase Inc. (États-Unis) héberge notre système d'authentification et notre base de données. Votre e-mail, vos données de profil, votre historique de scans et vos photos d'avatar / de scans sont stockés dans notre projet Supabase. Supabase est lié par sa propre <a href="https://supabase.com/privacy" target="_blank" rel="noopener">politique de confidentialité</a> et agit en tant que sous-traitant au sens du RGPD.</p>
+
+<h3>3.2 OpenAI (analyse d'image par IA)</h3>
+<p>L'analyse colorimétrique est propulsée par les modèles vision GPT-4o d'OpenAI. Les photos que vous soumettez (visage, poignet, selfies additionnels, scans de vêtements) sont transmises aux endpoints API d'OpenAI aux États-Unis dans l'unique but de l'analyse. Selon la <a href="https://openai.com/enterprise-privacy" target="_blank" rel="noopener">politique d'utilisation des données API d'OpenAI</a> :</p>
+<ul>
+  <li>Les entrées et sorties de l'API <strong>ne sont pas utilisées pour entraîner les modèles d'OpenAI</strong>.</li>
+  <li>OpenAI peut conserver les requêtes API jusqu'à <strong>30 jours</strong> à des fins de surveillance des abus, après quoi elles sont supprimées.</li>
+</ul>
+<p>En utilisant les fonctionnalités d'analyse de NotMyColor, vous consentez à ce traitement. Si vous n'y consentez pas, vous pouvez utiliser le parcours d'analyse manuelle pendant l'onboarding, qui n'envoie aucune photo hors de l'appareil.</p>
+
+<h3>3.3 Aucun autre tiers</h3>
+<p>Nous <strong>n'utilisons</strong> actuellement <strong>pas</strong> Firebase, Google Analytics, Mixpanel, RevenueCat, Superwall, services de notifications push, SDK publicitaires ou aucune technologie de tracking. Si nous ajoutons un tel service à l'avenir, nous mettrons à jour cette politique et vous en informerons dans l'application.</p>
+
+<h2>4. Données personnelles sensibles</h2>
+
+<p>L'analyse de la saison colorimétrique implique le traitement de caractéristiques visuelles de votre apparence, notamment <strong>le teint, la couleur des cheveux, la couleur des yeux et le sous-ton du poignet</strong>, ainsi que des photos de votre visage et de votre poignet. Au sens du RGPD, les photos permettant l'identification et les informations sur les caractéristiques physiques peuvent être qualifiées de données personnelles sensibles. Nous traitons ces informations uniquement pour fournir le service d'analyse colorimétrique que vous avez demandé, sur la base de votre consentement explicite donné lorsque vous lancez l'analyse. Elles ne sont jamais partagées avec des annonceurs ou des tiers à des fins commerciales.</p>
+
+<h2>5. Conservation des données</h2>
+
+<ul>
+  <li><strong>Données de compte</strong> (e-mail, profil, saison, historique de scans, avatar) : conservées tant que votre compte est actif.</li>
+  <li><strong>Photos d'analyse</strong> (visage, poignet, selfies additionnels soumis pendant l'onboarding) : non stockées sur nos serveurs ; peuvent être conservées par OpenAI jusqu'à 30 jours comme décrit en Section 3.2.</li>
+  <li><strong>Photos de scans de vêtements</strong> : conservées dans votre historique de scans tant que votre compte est actif, et localement sur votre appareil jusqu'à ce que vous supprimiez le scan correspondant.</li>
+  <li><strong>Jetons d'authentification</strong> : stockés dans le Trousseau iOS sur votre appareil ; rafraîchis automatiquement et supprimés lorsque vous vous déconnectez.</li>
+</ul>
+
+<p>Vous pouvez supprimer votre compte à tout moment depuis <em>Profil → Supprimer mon compte</em>. Lors de la suppression, toutes les données personnelles associées à votre compte dans notre base sont définitivement supprimées dans un délai de 30 jours. Les données locales sur votre appareil sont supprimées immédiatement à la déconnexion / suppression du compte.</p>
+
+<h2>6. Base légale du traitement (RGPD)</h2>
+
+<ul>
+  <li><strong>Exécution d'un contrat :</strong> création de compte, authentification, analyse colorimétrique, historique de scans.</li>
+  <li><strong>Consentement explicite :</strong> traitement des photos et des informations physiques sensibles (Section 4). Le consentement peut être retiré à tout moment en supprimant votre compte ou en nous contactant.</li>
+  <li><strong>Intérêt légitime :</strong> prévention des abus et sécurité.</li>
+</ul>
+
+<h2>7. Vos droits (UE / EEE — RGPD)</h2>
+
+<p>Si vous résidez dans l'Espace économique européen, vous disposez des droits suivants concernant vos données personnelles :</p>
+<ul>
+  <li><strong>Accès</strong> — demander une copie des données que nous détenons sur vous.</li>
+  <li><strong>Rectification</strong> — demander la correction de données inexactes.</li>
+  <li><strong>Effacement</strong> — demander la suppression de vos données (« droit à l'oubli ») ; également réalisable via le bouton Supprimer mon compte.</li>
+  <li><strong>Portabilité</strong> — demander vos données dans un format lisible par machine.</li>
+  <li><strong>Limitation</strong> — demander à ce que nous limitions le traitement de vos données.</li>
+  <li><strong>Opposition</strong> — vous opposer à certains types de traitement.</li>
+  <li><strong>Retrait du consentement</strong> — à tout moment, sans effet sur la licéité des traitements passés.</li>
+  <li><strong>Réclamation</strong> auprès de votre autorité nationale de protection des données (en France : la CNIL).</li>
+</ul>
+
+<p>Pour exercer ces droits, contactez-nous à l'adresse e-mail ci-dessous. Nous répondrons sous 30 jours.</p>
+
+<h2>8. Vos droits (Californie — CCPA / CPRA)</h2>
+
+<p>Si vous résidez en Californie, vous avez le droit de :</p>
+<ul>
+  <li>Connaître les informations personnelles que nous collectons, utilisons et divulguons.</li>
+  <li>Demander la suppression de vos informations personnelles.</li>
+  <li>Demander la rectification d'informations personnelles inexactes.</li>
+  <li>Vous opposer à la « vente » ou au « partage » d'informations personnelles à des fins de publicité comportementale inter-contextes. <strong>Nous ne vendons ni ne partageons vos informations personnelles à des fins publicitaires.</strong></li>
+  <li>Limiter l'utilisation des informations personnelles sensibles. Nous ne traitons ces informations que pour fournir le service d'analyse colorimétrique que vous avez demandé.</li>
+  <li>Ne pas subir de représailles pour avoir exercé l'un de ces droits.</li>
+</ul>
+
+<p>Pour exercer ces droits, contactez-nous à l'adresse e-mail ci-dessous.</p>
+
+<h2>9. Transferts internationaux de données</h2>
+
+<p>Nos sous-traitants (Supabase, OpenAI) hébergent les données aux États-Unis. Si vous résidez dans l'Espace économique européen, au Royaume-Uni ou en Suisse, vos données personnelles peuvent être transférées vers un pays qui n'offre pas le même niveau de protection des données que votre pays d'origine. Nous nous appuyons sur les clauses contractuelles types de la Commission européenne avec nos sous-traitants pour garantir un niveau de protection adéquat.</p>
+
+<h2>10. Confidentialité des mineurs</h2>
+
+<p>NotMyColor n'est pas destiné aux utilisateurs de moins de 13 ans. Nous ne collectons pas sciemment de données personnelles auprès d'enfants de moins de 13 ans. Si vous êtes parent ou tuteur et pensez qu'un enfant nous a fourni des informations personnelles, contactez-nous et nous les supprimerons rapidement.</p>
+
+<h2>11. Sécurité des données</h2>
+
+<p>Nous utilisons des mesures de sécurité conformes à l'état de l'art pour protéger vos données en transit (HTTPS / TLS) et au repos (stockage chiffré sur Supabase). Les jetons d'authentification sont stockés dans le Trousseau iOS. Toutefois, aucune méthode de transmission sur Internet n'est sûre à 100 %, et nous ne pouvons pas garantir une sécurité absolue.</p>
+
+<h2>12. Modifications de cette politique</h2>
+
+<p>Nous pouvons mettre à jour cette politique de confidentialité de temps en temps. Nous vous informerons des changements significatifs via l'application ou par e-mail. La date « Dernière mise à jour » en haut de cette page reflète la révision la plus récente.</p>
+
+<h2>13. Contact</h2>
+
+<p>Si vous avez des questions concernant cette politique de confidentialité ou la manière dont nous traitons vos données, vous pouvez nous joindre à :</p>
+<p><a href="#" id="contactLink">contact@notmycolor.app</a></p>
+
+<script>
+function getOrCreateUserId() {
+  let id = localStorage.getItem('nmc_user_id')
+  if (!id) {
+    id = Array.from(crypto.getRandomValues(new Uint8Array(16)))
+      .map(b => b.toString(36)).join('').slice(0, 20)
+    localStorage.setItem('nmc_user_id', id)
+  }
+  return id
+}
+
+function getDeviceInfo() {
+  const ua = navigator.userAgent
+  let platform = 'Web', osVersion = 'Inconnu', device = 'Navigateur'
+  if (/iPhone/.test(ua))       { platform = 'iOS';     device = 'iPhone' }
+  else if (/iPad/.test(ua))    { platform = 'iOS';     device = 'iPad' }
+  else if (/Android/.test(ua)) { platform = 'Android'; device = 'Appareil Android' }
+  else if (/Mac/.test(ua))     { platform = 'macOS';   device = 'Mac' }
+  else if (/Windows/.test(ua)) { platform = 'Windows'; device = 'PC' }
+  const m = ua.match(/OS ([\d_]+)/) || ua.match(/Android ([\d.]+)/)
+  if (m) osVersion = m[1].replace(/_/g, '.')
+  return { platform, osVersion, device }
+}
+
+document.getElementById('contactLink').addEventListener('click', function(e) {
+  e.preventDefault()
+  const userId = getOrCreateUserId()
+  const { platform, osVersion, device } = getDeviceInfo()
+  const encodedId = btoa(userId).replace(/=/g, '')
+  const body = [
+    '', '',
+    '——————————————————————',
+    'Décrivez votre demande au-dessus de cette ligne.',
+    'User ID: ' + userId,
+    'Version: 1.0.0',
+    'Provider ID: ' + encodedId,
+    'Platform: ' + platform,
+    (platform === 'iOS' ? 'iOS' : 'OS') + ' Version: ' + osVersion,
+    'Device: ' + device,
+  ].join('\n')
+  window.location.href = 'mailto:contact@notmycolor.app?subject=' + encodeURIComponent('Demande RGPD / Vie privée') + '&body=' + encodeURIComponent(body)
+})
+</script>
+
+</body>
+</html>
