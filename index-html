@@ -1,0 +1,710 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#0a0a0a" />
+  <meta name="color-scheme" content="dark" />
+
+  <title>NotMyColor · Stop wearing colors that wash you out</title>
+  <meta name="description" content="AI-powered color analysis on iPhone. Discover your personal palette in 5 minutes, then scan any garment to know if it suits you, before you buy." />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="NotMyColor · Stop wearing colors that wash you out" />
+  <meta property="og:description" content="AI-powered color analysis on iPhone. Discover your personal palette in 5 minutes, then scan any garment to know if it suits you, before you buy." />
+  <meta property="og:url" content="https://notmycolor.app/" />
+  <meta property="og:site_name" content="NotMyColor" />
+
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="NotMyColor · Color analysis in your pocket" />
+  <meta name="twitter:description" content="AI-powered color analysis on iPhone. Scan clothes and instantly know if the color suits you." />
+
+  <link rel="icon" type="image/png" href="media/logo.png" />
+  <link rel="apple-touch-icon" href="media/logo.png" />
+
+  <link rel="preconnect" href="https://api.fontshare.com" />
+  <link rel="preconnect" href="https://cdn.fontshare.com" crossorigin />
+  <link href="https://api.fontshare.com/v2/css?f[]=aeonik@400,500,700,900&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --bg: #0a0a0a;
+      --white: #ffffff;
+      --muted: rgba(255,255,255,0.58);
+      --soft: rgba(255,255,255,0.08);
+      --border: rgba(255,255,255,0.12);
+      --maxw: 1100px;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: var(--bg);
+      color: var(--white);
+      font-family: "Aeonik", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+      overflow-x: hidden;
+      scroll-behavior: smooth;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .blob-bg {
+      position: fixed;
+      inset: 0;
+      z-index: -2;
+      overflow: hidden;
+      background: #0a0a0a;
+    }
+
+    .blob {
+      position: absolute;
+      width: 55vmax;
+      height: 55vmax;
+      border-radius: 50%;
+      filter: blur(90px);
+      opacity: 0.5;
+      mix-blend-mode: screen;
+      animation: float 18s ease-in-out infinite;
+    }
+
+    .blob.a {
+      top: -12vmax;
+      left: -12vmax;
+      background: radial-gradient(circle, #6600ff 0%, transparent 60%);
+    }
+
+    .blob.b {
+      bottom: -14vmax;
+      right: -12vmax;
+      background: radial-gradient(circle, #ff2d88 0%, transparent 60%);
+      animation-delay: -6s;
+    }
+
+    .blob.c {
+      top: 35vh;
+      left: 35vw;
+      background: radial-gradient(circle, #00c8ff 0%, transparent 60%);
+      opacity: 0.35;
+      animation-delay: -10s;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translate3d(0,0,0) scale(1); }
+      50% { transform: translate3d(10vw,8vh,0) scale(1.15); }
+    }
+
+    .vignette {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      background:
+        radial-gradient(ellipse at center, transparent 0%, rgba(0,0,0,0.45) 75%, rgba(0,0,0,0.75) 100%),
+        linear-gradient(to bottom, rgba(10,10,10,0.2), rgba(10,10,10,0.75));
+      pointer-events: none;
+    }
+
+    .nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 20;
+      padding: 18px 24px;
+    }
+
+    .nav-inner {
+      max-width: var(--maxw);
+      margin: 0 auto;
+      padding: 14px 18px 14px 24px;
+      border-radius: 999px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(16,16,18,0.55);
+      border: 1px solid rgba(255,255,255,0.08);
+      backdrop-filter: blur(20px);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      font-weight: 900;
+      font-size: 17px;
+    }
+
+    .brand img {
+      width: 36px;
+      height: 36px;
+      display: block;
+    }
+
+    .nav-cta,
+    .btn-primary {
+      background: white;
+      color: black;
+      border-radius: 999px;
+      font-weight: 800;
+      transition: transform 0.18s ease;
+      white-space: nowrap;
+    }
+
+    .nav-cta {
+      padding: 10px 16px;
+      font-size: 13px;
+    }
+
+    .nav-cta:hover,
+    .btn-primary:hover {
+      transform: scale(1.03);
+    }
+
+    section {
+      position: relative;
+      padding: 100px 24px;
+    }
+
+    .container {
+      max-width: var(--maxw);
+      margin: 0 auto;
+    }
+
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding-top: 130px;
+    }
+
+    .hero-inner {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 14px;
+      border-radius: 999px;
+      background: var(--soft);
+      border: 1px solid var(--border);
+      color: rgba(255,255,255,0.84);
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      margin-bottom: 28px;
+    }
+
+    .badge-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #29cc57;
+      box-shadow: 0 0 8px rgba(41,204,87,0.8);
+    }
+
+    h1, h2, h3 {
+      margin: 0;
+      font-weight: 900;
+      letter-spacing: -0.035em;
+      line-height: 1.04;
+    }
+
+    h1 {
+      font-size: clamp(42px, 8.5vw, 86px);
+      margin-bottom: 22px;
+    }
+
+    h2 {
+      font-size: clamp(34px, 6vw, 58px);
+      margin-bottom: 18px;
+      text-align: center;
+    }
+
+    h3 {
+      font-size: 24px;
+      margin-bottom: 10px;
+    }
+
+    p {
+      color: var(--muted);
+      font-size: 17px;
+      line-height: 1.6;
+    }
+
+    .gradient-text {
+      background: linear-gradient(90deg, #ff6bff 0%, #ffc46b 50%, #6bcbff 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      color: transparent;
+    }
+
+    .hero-sub {
+      max-width: 660px;
+      margin: 0 auto 38px;
+      font-size: clamp(16px, 1.8vw, 20px);
+    }
+
+    .cta-row {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 18px 32px;
+      font-size: 16px;
+    }
+
+    .cta-hint {
+      font-size: 13px;
+      color: rgba(255,255,255,0.42);
+    }
+
+    .section-head {
+      max-width: 720px;
+      margin: 0 auto 56px;
+      text-align: center;
+    }
+
+    .eyebrow {
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.45);
+      margin-bottom: 16px;
+    }
+
+    .phone-wrap {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-top: 50px;
+    }
+
+    .phone-frame {
+      width: min(340px, 82vw);
+      aspect-ratio: 9 / 18.6;
+      border-radius: 56px;
+      overflow: hidden;
+      background: #111;
+      box-shadow:
+        0 30px 80px rgba(108,0,255,0.35),
+        0 60px 120px rgba(0,200,255,0.15);
+    }
+
+    .phone-frame video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center top;
+      display: block;
+    }
+
+    .color-band {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 12px;
+      max-width: 900px;
+      margin: 40px auto 0;
+    }
+
+    .swatch {
+      aspect-ratio: 1 / 1.25;
+      border-radius: 20px;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.08);
+    }
+
+    .swatch:nth-child(1) { background: #5d2e0f; }
+    .swatch:nth-child(2) { background: #2e4d2a; }
+    .swatch:nth-child(3) { background: #6e1a1a; }
+    .swatch:nth-child(4) { background: #3e2723; }
+    .swatch:nth-child(5) { background: #704214; }
+    .swatch:nth-child(6) { background: #edc9af; }
+
+    .steps,
+    .bento {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+
+    @media (min-width: 768px) {
+      .steps {
+        grid-template-columns: repeat(3, 1fr);
+      }
+
+      .bento {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    .card,
+    .tile {
+      padding: 30px;
+      background: rgba(255,255,255,0.055);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 24px;
+      backdrop-filter: blur(14px);
+    }
+
+    .problem {
+      text-align: center;
+    }
+
+    .problem p {
+      font-size: clamp(28px, 5vw, 58px);
+      font-weight: 900;
+      letter-spacing: -0.04em;
+      line-height: 1.18;
+      color: white;
+      margin: 16px auto;
+      max-width: 960px;
+    }
+
+    .promise-inline {
+      max-width: 760px;
+      margin: 0 auto 70px;
+      text-align: center;
+    }
+
+    .promise-inline blockquote {
+      margin: 0;
+      font-size: clamp(20px, 3vw, 28px);
+      line-height: 1.45;
+      color: rgba(255,255,255,0.68);
+      font-style: italic;
+    }
+
+    .promise-inline cite {
+      display: block;
+      margin-top: 18px;
+      color: rgba(255,255,255,0.38);
+      font-style: normal;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+
+    .faq-list {
+      max-width: 760px;
+      margin: 0 auto;
+      border-top: 1px solid var(--border);
+    }
+
+    details {
+      border-bottom: 1px solid var(--border);
+      padding: 22px 4px;
+    }
+
+    summary {
+      cursor: pointer;
+      list-style: none;
+      font-size: 18px;
+      font-weight: 800;
+    }
+
+    summary::-webkit-details-marker {
+      display: none;
+    }
+
+    details div {
+      margin-top: 14px;
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.6;
+    }
+
+    footer {
+      padding: 56px 24px calc(40px + env(safe-area-inset-bottom));
+      border-top: 1px solid var(--border);
+      text-align: center;
+    }
+
+    .footer-inner {
+      max-width: var(--maxw);
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 22px;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      justify-content: center;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .copyright {
+      color: rgba(255,255,255,0.35);
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      font-weight: 700;
+    }
+
+    @media (max-width: 640px) {
+      .nav-cta {
+        padding: 9px 12px;
+        font-size: 12px;
+      }
+
+      .brand span:last-child {
+        display: none;
+      }
+
+      .color-band {
+        gap: 8px;
+      }
+
+      .card,
+      .tile {
+        padding: 22px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="blob-bg" aria-hidden="true">
+    <div class="blob a"></div>
+    <div class="blob b"></div>
+    <div class="blob c"></div>
+  </div>
+  <div class="vignette" aria-hidden="true"></div>
+
+  <header class="nav">
+    <div class="nav-inner">
+      <a href="#top" class="brand" aria-label="NotMyColor home">
+        <img src="media/logo.png" alt="" />
+        <span>NotMyColor</span>
+      </a>
+
+      <a href="https://apps.apple.com/us/app/notmycolor-color-analysis/id6765435968" class="nav-cta" target="_blank" rel="noopener noreferrer">
+        Download on the App Store
+      </a>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <div class="hero-inner">
+        <div class="badge">
+          <span class="badge-dot" aria-hidden="true"></span>
+          <span>Now available on the App Store</span>
+        </div>
+
+        <h1>
+          Stop wearing <span class="gradient-text">colors</span><br />
+          that wash you out.
+        </h1>
+
+        <p class="hero-sub">
+          AI-powered color analysis in your pocket. Discover your personal palette in 5 minutes,
+          then scan any garment to know if it really suits you, before you buy.
+        </p>
+
+        <div class="cta-row">
+          <a href="https://apps.apple.com/us/app/notmycolor-color-analysis/id6765435968" class="btn-primary" target="_blank" rel="noopener noreferrer">
+            Download on the App Store
+            <span aria-hidden="true">→</span>
+          </a>
+          <span class="cta-hint">Now available on iPhone</span>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="container">
+        <div class="section-head">
+          <div class="eyebrow">Live demo</div>
+          <h2>Your wardrobe, finally <span class="gradient-text">graded</span>.</h2>
+          <p>
+            Scan any garment. Get an instant color match score against your personal palette,
+            right in your pocket.
+          </p>
+        </div>
+
+        <div class="phone-wrap">
+          <div class="phone-frame">
+            <video muted loop playsinline autoplay poster="media/app-demo-poster.jpg" aria-label="NotMyColor app demo">
+              <source src="media/app-demo.webm" type="video/webm" />
+              <source src="media/app-demo.mp4" type="video/mp4" />
+            </video>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="container">
+        <div class="section-head">
+          <div class="eyebrow">12 unique seasons · Yours, decoded</div>
+          <h2>Your colors, finally clear.</h2>
+        </div>
+
+        <div class="color-band" aria-hidden="true">
+          <div class="swatch"></div>
+          <div class="swatch"></div>
+          <div class="swatch"></div>
+          <div class="swatch"></div>
+          <div class="swatch"></div>
+          <div class="swatch"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="problem">
+      <div class="container">
+        <p>You bought it because it looked perfect.</p>
+        <p>On you, it just feels off.</p>
+        <p><span class="gradient-text">It's not you. It's the wrong color.</span></p>
+      </div>
+    </section>
+
+    <section>
+      <div class="container">
+        <div class="section-head">
+          <div class="eyebrow">How it works</div>
+          <h2>Three steps. Forever changed.</h2>
+        </div>
+
+        <div class="steps">
+          <article class="card">
+            <h3>Analyze</h3>
+            <p>A short quiz and a few photos help our AI identify your color season.</p>
+          </article>
+
+          <article class="card">
+            <h3>Discover</h3>
+            <p>Get your personal palette with colors tagged wear, depends, or avoid.</p>
+          </article>
+
+          <article class="card">
+            <h3>Scan</h3>
+            <p>Point your camera at any garment and know instantly if it suits you.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="container">
+        <div class="section-head">
+          <div class="eyebrow">What's inside</div>
+          <h2>A colorimetrist in your pocket.</h2>
+          <p>
+            Built on the 12-season color analysis system. Powered by vision AI.
+            Designed to help you stop buying clothes you never wear.
+          </p>
+        </div>
+
+        <div class="bento">
+          <article class="tile">
+            <h3>Personal palette</h3>
+            <p>Know which shades make you look brighter, sharper, and more expensive.</p>
+          </article>
+
+          <article class="tile">
+            <h3>Real-time scanner</h3>
+            <p>Scan clothes in store, at home, or from your screen.</p>
+          </article>
+
+          <article class="tile">
+            <h3>Instant verdict</h3>
+            <p>Get a clear result before buying: wear, depends, or avoid.</p>
+          </article>
+
+          <article class="tile">
+            <h3>Wardrobe memory</h3>
+            <p>Save your scans and build a closet that actually works for you.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="container">
+      <div class="promise-inline">
+        <blockquote>
+          “Built by people tired of buying clothes that end up at the back of the closet.”
+        </blockquote>
+        <cite>The NotMyColor team</cite>
+      </div>
+
+      <div class="section-head">
+        <div class="eyebrow">FAQ</div>
+        <h2>Quick answers.</h2>
+      </div>
+
+      <div class="faq-list">
+        <details>
+          <summary>How much will it cost?</summary>
+          <div>
+            Three free scans to try the experience end-to-end. Then a monthly or yearly subscription
+            for unlimited scans and your full personal palette.
+          </div>
+        </details>
+
+        <details>
+          <summary>iPhone only?</summary>
+          <div>
+            Yes for now. Android may follow later.
+          </div>
+        </details>
+
+        <details>
+          <summary>Is my data private?</summary>
+          <div>
+            Yes. Your photos are analyzed for the service and handled according to our Privacy Policy.
+          </div>
+        </details>
+
+        <details>
+          <summary>What's the science behind it?</summary>
+          <div>
+            NotMyColor uses the 12-season color analysis framework to compare your features and garments
+            against your best palette.
+          </div>
+        </details>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+      <a href="#top" class="brand" aria-label="NotMyColor home">
+        <img src="media/logo.png" alt="" />
+        <span>NotMyColor</span>
+      </a>
+
+      <div class="footer-links">
+        <a href="/privacy/">Privacy</a>
+        <a href="/privacy-fr/">Privacy FR</a>
+        <a href="https://www.apple.com/legal/internet-services/itunes/dev/stdeula/" target="_blank" rel="noopener noreferrer">Terms</a>
+        <a href="mailto:contact@notmycolor.app">contact@notmycolor.app</a>
+      </div>
+
+      <div class="copyright">© 2026 NOTMYCOLOR</div>
+    </div>
+  </footer>
+</body>
+</html>
