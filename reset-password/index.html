@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<title>NotMyColor — Reset password</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
+    background: #111111;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    -webkit-font-smoothing: antialiased;
+  }
+  .card {
+    width: 100%;
+    max-width: 380px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.10);
+    border-radius: 22px;
+    padding: 32px 24px 28px;
+  }
+  h1 { font-size: 22px; font-weight: 700; margin-bottom: 8px; }
+  p.sub { font-size: 14px; color: rgba(255,255,255,0.55); margin-bottom: 24px; line-height: 1.5; }
+  label { display: block; font-size: 13px; color: rgba(255,255,255,0.6); margin: 14px 0 6px; }
+  input[type=password] {
+    width: 100%;
+    height: 50px;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 14px;
+    padding: 0 16px;
+    color: #fff;
+    font-size: 15px;
+    outline: none;
+  }
+  input[type=password]:focus { border-color: rgba(255,255,255,0.35); }
+  .hint { font-size: 12.5px; margin-top: 10px; display: flex; align-items: center; gap: 6px; color: rgba(255,255,255,0.35); }
+  .hint.ok { color: rgba(120,220,150,0.9); }
+  button {
+    width: 100%;
+    height: 52px;
+    margin-top: 24px;
+    border: none;
+    border-radius: 26px;
+    background: #ffffff;
+    color: #111111;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  button:disabled { opacity: 0.4; cursor: default; }
+  .msg { font-size: 13.5px; margin-top: 16px; line-height: 1.5; }
+  .msg.error { color: rgba(255,120,120,0.95); }
+  .msg.ok { color: rgba(120,220,150,0.95); }
+  .center { text-align: center; }
+  .big-check { font-size: 44px; margin-bottom: 12px; }
+  .hidden { display: none !important; }
+</style>
+</head>
+<body>
+<div class="card">
+
+  <!-- Loading / token check -->
+  <div id="loading" class="center">
+    <p class="sub" data-i18n="checking">Checking your reset link…</p>
+  </div>
+
+  <!-- Reset form -->
+  <div id="form" class="hidden">
+    <h1 data-i18n="title">Choose a new password</h1>
+    <p class="sub" data-i18n="subtitle">Enter a new password for your NotMyColor account.</p>
+
+    <label data-i18n="newLabel">New password</label>
+    <input id="pw" type="password" autocomplete="new-password" />
+    <label data-i18n="confirmLabel">Confirm password</label>
+    <input id="pw2" type="password" autocomplete="new-password" />
+
+    <div id="hintLen" class="hint"><span>○</span><span data-i18n="hintLen">At least 8 characters</span></div>
+    <div id="hintMatch" class="hint"><span>○</span><span data-i18n="hintMatch">Passwords match</span></div>
+
+    <button id="submit" disabled data-i18n="submit">Update password</button>
+    <p id="formMsg" class="msg error hidden"></p>
+  </div>
+
+  <!-- Success -->
+  <div id="success" class="hidden center">
+    <div class="big-check">✓</div>
+    <h1 data-i18n="doneTitle">Password updated</h1>
+    <p class="sub" data-i18n="doneBody">You can now go back to the NotMyColor app and sign in with your new password.</p>
+  </div>
+
+  <!-- Expired / invalid link -->
+  <div id="expired" class="hidden center">
+    <h1 data-i18n="expTitle">Link expired</h1>
+    <p class="sub" data-i18n="expBody">This password reset link is no longer valid. Open the NotMyColor app, tap “Forgot password” and request a new link.</p>
+  </div>
+
+</div>
+
+<script>
+  // Public project values (anon key is safe to ship in a client).
+  var SUPABASE_URL = "https://culktqywsagosksslhvf.supabase.co";
+  var SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN1bGt0cXl3c2Fnb3Nrc3NsaHZmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUwNzAzMDMsImV4cCI6MjA5MDY0NjMwM30.OJqHDNx3IUvQ42cwv3iPV_Y4wd9LPR0NZIX2s1o9tOU";
+
+  // ── i18n (FR / EN auto-detect) ───────────────────────────────────────────
+  var fr = (navigator.language || "en").toLowerCase().indexOf("fr") === 0;
+  var STR = {
+    checking:     fr ? "Vérification de votre lien…" : "Checking your reset link…",
+    title:        fr ? "Choisir un nouveau mot de passe" : "Choose a new password",
+    subtitle:     fr ? "Saisissez un nouveau mot de passe pour votre compte NotMyColor." : "Enter a new password for your NotMyColor account.",
+    newLabel:     fr ? "Nouveau mot de passe" : "New password",
+    confirmLabel: fr ? "Confirmer le mot de passe" : "Confirm password",
+    hintLen:      fr ? "Au moins 8 caractères" : "At least 8 characters",
+    hintMatch:    fr ? "Les mots de passe correspondent" : "Passwords match",
+    submit:       fr ? "Mettre à jour le mot de passe" : "Update password",
+    submitting:   fr ? "Mise à jour…" : "Updating…",
+    doneTitle:    fr ? "Mot de passe mis à jour" : "Password updated",
+    doneBody:     fr ? "Vous pouvez maintenant revenir dans l'app NotMyColor et vous connecter avec votre nouveau mot de passe." : "You can now go back to the NotMyColor app and sign in with your new password.",
+    expTitle:     fr ? "Lien expiré" : "Link expired",
+    expBody:      fr ? "Ce lien de réinitialisation n'est plus valide. Ouvrez l'app NotMyColor, touchez « Mot de passe oublié » et demandez un nouveau lien." : "This password reset link is no longer valid. Open the NotMyColor app, tap “Forgot password” and request a new link.",
+    errWeak:      fr ? "Mot de passe trop faible (8 caractères minimum)." : "Password too weak (8 characters minimum).",
+    errGeneric:   fr ? "Une erreur est survenue. Réessayez ou demandez un nouveau lien." : "Something went wrong. Try again or request a new link.",
+    errExpired:   fr ? "Votre session de réinitialisation a expiré. Demandez un nouveau lien depuis l'app." : "Your reset session expired. Request a new link from the app."
+  };
+  document.documentElement.lang = fr ? "fr" : "en";
+  Array.prototype.forEach.call(document.querySelectorAll("[data-i18n]"), function (el) {
+    var k = el.getAttribute("data-i18n");
+    if (STR[k]) el.textContent = STR[k];
+  });
+
+  function show(id) {
+    ["loading", "form", "success", "expired"].forEach(function (s) {
+      document.getElementById(s).classList.toggle("hidden", s !== id);
+    });
+  }
+
+  // ── Parse the recovery token from the URL fragment (implicit flow) ─────────
+  // Supabase redirects here as:
+  //   https://notmycolor.app/reset-password#access_token=...&type=recovery&...
+  // On an expired/used link it appends ?error=... (or #error=...) instead.
+  function parseParams() {
+    var out = {};
+    [location.hash.replace(/^#/, ""), location.search.replace(/^\?/, "")].forEach(function (raw) {
+      raw.split("&").forEach(function (part) {
+        if (!part) return;
+        var i = part.indexOf("=");
+        if (i === -1) return;
+        out[decodeURIComponent(part.slice(0, i))] = decodeURIComponent(part.slice(i + 1));
+      });
+    });
+    return out;
+  }
+
+  var params = parseParams();
+  var accessToken = params.access_token || "";
+  var isRecovery = params.type === "recovery" || !!accessToken;
+
+  if (params.error || (!accessToken)) {
+    show("expired");
+  } else if (!isRecovery) {
+    show("expired");
+  } else {
+    show("form");
+    wireForm(accessToken);
+  }
+
+  function wireForm(token) {
+    var pw = document.getElementById("pw");
+    var pw2 = document.getElementById("pw2");
+    var btn = document.getElementById("submit");
+    var msg = document.getElementById("formMsg");
+    var hintLen = document.getElementById("hintLen");
+    var hintMatch = document.getElementById("hintMatch");
+
+    function validate() {
+      var okLen = pw.value.length >= 8;
+      var okMatch = pw.value.length > 0 && pw.value === pw2.value;
+      hintLen.classList.toggle("ok", okLen);
+      hintLen.firstChild.textContent = okLen ? "✓" : "○";
+      hintMatch.classList.toggle("ok", okMatch);
+      hintMatch.firstChild.textContent = okMatch ? "✓" : "○";
+      btn.disabled = !(okLen && okMatch);
+    }
+    pw.addEventListener("input", validate);
+    pw2.addEventListener("input", validate);
+
+    btn.addEventListener("click", function () {
+      msg.classList.add("hidden");
+      btn.disabled = true;
+      btn.textContent = STR.submitting;
+
+      fetch(SUPABASE_URL + "/auth/v1/user", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          "apikey": SUPABASE_ANON_KEY,
+          "Authorization": "Bearer " + token
+        },
+        body: JSON.stringify({ password: pw.value })
+      }).then(function (res) {
+        if (res.ok) { show("success"); return; }
+        return res.text().then(function (body) {
+          btn.disabled = false;
+          btn.textContent = STR.submit;
+          msg.classList.remove("hidden");
+          if (res.status === 422) msg.textContent = STR.errWeak;
+          else if (res.status === 401 || res.status === 403) msg.textContent = STR.errExpired;
+          else msg.textContent = STR.errGeneric;
+        });
+      }).catch(function () {
+        btn.disabled = false;
+        btn.textContent = STR.submit;
+        msg.classList.remove("hidden");
+        msg.textContent = STR.errGeneric;
+      });
+    });
+  }
+</script>
+</body>
+</html>
